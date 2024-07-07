@@ -15,16 +15,19 @@ import argparse
 import os
 import cv2
 # python train.py --dataset ./datasets/smileD  --model ./output/lenet.hdf5
+#Tạo đối tượng phân tích đối số mới, và thêm đối số --dataset với mô tả đường dẫn đến tập dữ liệu hình ảnh, đối số --model với mô tả đường dẫn để lưu mô hình đầu ra
 ap =  argparse.ArgumentParser()
 ap.add_argument("-d", "--dataset", required=True, help="path to image dataset")
 ap.add_argument("-m", "--model", required=True, help="path to output model")
+#Phân tích các đối số và chuyển chúng thành 1 từ điển
 args = vars(ap.parse_args())
-
+#tạo danh sách trống để lưu dữ liệu hình ảnh và nhãn của chúng
 data = []
 labels = []
 
+#vòng lặp chạy qua tất cả các đường dẫn hình ảnh trong tập dữ liệu
 for imagePath in sorted(list(paths.list_images(args["dataset"]))):
-    image = cv2.imread(imagePath) #(H, W, Depth = 3)
+    image = cv2.imread(imagePath) #(H, W, Depth = 3), 
     image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)#(H, W, Depth = 1)
     image = imutils.resize(image, width=28)
     image = img_to_array(image)
@@ -33,7 +36,13 @@ for imagePath in sorted(list(paths.list_images(args["dataset"]))):
     label = imagePath.split(os.path.sep)[-2]
     label = "smiling" if label == "1" else "not_smiling"
     labels.append(label) 
-
+    # if label == "1":
+    #     label = "smiling"
+    # elif label == "0":
+    #     label = "not_smiling"
+    # elif label == "2":
+    #     label = "crying"
+    # labels.append(label) 
 data =  np.array(data, dtype="float")/255.0
 labels = np.array(labels)
 
@@ -52,6 +61,7 @@ type(classWeight)
 # print(trainY[0])
 print("compiling model")
 model = LeNet.build(width=28, height=28, depth=1, classes=2)
+#nếu muốn phân loại nhiều hơn 2 lớp thì dùng categorical thay vì binary
 model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
 
 
