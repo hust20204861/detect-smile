@@ -42,7 +42,7 @@ for imagePath in sorted(list(paths.list_images(args["dataset"]))):
     #     label = "not_smiling"
     # elif label == "2":
     #     label = "crying"
-    # labels.append(label) 
+    # labels.append(label) ...
 data =  np.array(data, dtype="float")/255.0
 labels = np.array(labels)
 
